@@ -44,9 +44,24 @@ async function initializeDatabase() {
             verification_token TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME
-    )
+          )
         `);
         console.log('Users table checked/created');
+        
+        // Create refresh_tokens table
+        await connection.query(`
+          CREATE TABLE IF NOT EXISTS refresh_tokens (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            account_id INT NOT NULL,
+            token VARCHAR(500) NOT NULL UNIQUE,
+            expires DATETIME NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            revoked_at DATETIME NULL,
+            replaced_by_token VARCHAR(500),
+            FOREIGN KEY (account_id) REFERENCES users(id) ON DELETE CASCADE
+          )
+        `);
+        console.log('Refresh tokens table checked/created');
         
         console.log('✅ Database initialized successfully');
         
