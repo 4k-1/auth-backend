@@ -11,9 +11,23 @@ const accountRoutes = require('./routes/accountRoutes');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// CORS
+// CORS - Allow multiple origins
+const allowedOrigins = [
+  'http://localhost:4200',
+  'https://auth-frontend-b038.onrender.com'
+];
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:4200',
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -62,7 +76,7 @@ async function start() {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
     console.log(`📚 API Docs: http://localhost:${PORT}/api-docs`);
     console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
-    console.log(`🔗 CORS Origin: ${process.env.CORS_ORIGIN}`);
+    console.log(`🔗 CORS Origins: http://localhost:4200, https://auth-frontend-b038.onrender.com`);
   });
 }
 
