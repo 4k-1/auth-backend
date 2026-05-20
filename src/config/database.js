@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 require('dotenv').config();
 
-// Create connection pool with SSL for freesqldatabase.com
+// Create connection pool - NO SSL for freesqldatabase.com
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -11,26 +11,17 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    // Add SSL for freesqldatabase.com (required for external connections)
-    ssl: process.env.NODE_ENV === 'production' ? {
-        rejectUnauthorized: false  // For freesqldatabase.com
-    } : false,
-    // Add connection timeout
     connectTimeout: 30000,
-    // Enable keep-alive
-    enableKeepAlive: true
+    enableKeepAlive: true,
 });
 
-// Function to initialize database and create tables
 async function initializeDatabase() {
     let connection;
     try {
         console.log('📡 Attempting to connect to database...');
         console.log(`Host: ${process.env.DB_HOST}`);
         console.log(`Database: ${process.env.DB_NAME}`);
-        console.log(`Environment: ${process.env.NODE_ENV}`);
         
-        // Create connection config for initial connection
         const connectionConfig = {
             host: process.env.DB_HOST || 'localhost',
             user: process.env.DB_USER || 'root',
@@ -39,23 +30,14 @@ async function initializeDatabase() {
             connectTimeout: 30000
         };
         
-        // Add SSL for production
-        if (process.env.NODE_ENV === 'production') {
-            connectionConfig.ssl = { rejectUnauthorized: false };
-        }
-        
-        // First connect without database to create it if needed
         connection = await mysql.createConnection(connectionConfig);
         console.log('✅ Connected to MySQL server');
 
-        // Create database if it doesn't exist
         const dbName = process.env.DB_NAME || 'auth_db';
         await connection.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\``);
         console.log(`✅ Database '${dbName}' checked/created`);
         
-        // Use the database
         await connection.query(`USE \`${dbName}\``);
-        console.log(`✅ Using database '${dbName}'`);
         
         // Create users table
         await connection.query(`
@@ -95,29 +77,13 @@ async function initializeDatabase() {
         
     } catch (error) {
         console.error('❌ Database initialization failed:', error);
-        console.error('Error details:', error.message);
         throw error;
     } finally {
         if (connection) await connection.end();
     }
 }
 
-// Test connection function
-async function testConnection() {
-    try {
-        const connection = await pool.getConnection();
-        console.log('✅ Database pool connection successful');
-        connection.release();
-        return true;
-    } catch (error) {
-        console.error('❌ Database pool connection failed:', error);
-        return false;
-    }
-}
-
-// Export both the pool and initialization function
 module.exports = {
     pool,
-    initializeDatabase,
-    testConnection
+    initializeDatabase
 };
