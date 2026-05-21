@@ -58,7 +58,8 @@ export default function model(sequelize: any) {
     },
     created: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
+      field: 'created_at'
     },
     updated: {
       type: DataTypes.DATE,
