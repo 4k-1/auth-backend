@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import accountsController from './accounts/accounts.controller';
 import errorHandler from './_middleware/error-handler';
-import swaggerDocs from './_helpers/swagger'
+import swaggerDocs from './_helpers/swagger';
 import './_helpers/db'; // This initializes the database
 
 dotenv.config();
@@ -20,7 +20,7 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function(origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -41,11 +41,11 @@ app.use('/accounts', accountsController);
 app.use('/api-docs', swaggerDocs);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString(), env: process.env.NODE_ENV });
 });
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.json({
     message: 'Auth System API is running',
     health: '/health',
@@ -53,7 +53,7 @@ app.get('/', (req, res) => {
 });
 
 // 404 handler
-app.use((req, res) => {
+app.use((req: Request, res: Response) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
