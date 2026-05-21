@@ -4,7 +4,7 @@
   "description": "Node.js TypeScript MySQL API with JWT authentication",
   "main": "dist/server.js",
   "scripts": {
-   "build": "tsc && node copy-assets.js",
+    "build": "tsc && node copy-assets.js",
     "copy-files": "node -e \"require('fs').copyFileSync('.env', 'dist/.env'); require('fs').copyFileSync('config.json', 'dist/config.json')\"",
     "start": "node dist/server.js",
     "dev": "nodemon --exec ts-node server.ts"
@@ -21,7 +21,7 @@
     "joi": "^18.2.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.5",
-    "nodemailer": "^6.9.7",
+    "nodemailer": "^8.0.7",
     "sequelize": "^6.35.0",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
