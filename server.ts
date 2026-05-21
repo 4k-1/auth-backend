@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import accountsController from './accounts/accounts.controller';
 import errorHandler from './_middleware/error-handler';
+import swaggerDocs from './_helpers/swagger'
 import './_helpers/db'; // This initializes the database
 
 dotenv.config();
@@ -37,6 +38,7 @@ app.use(cookieParser());
 
 // Routes
 app.use('/accounts', accountsController);
+app.use('/api-docs', swaggerDocs);
 
 // Health check
 app.get('/health', (req, res) => {
