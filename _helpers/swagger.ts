@@ -5,8 +5,8 @@ import path from 'path';
 
 const router = express.Router();
 
-// Load swagger.yaml from project root (same level as this file is in _helpers/)
-const swaggerDocument = YAML.load(path.resolve(__dirname, '../swagger.yaml'));
+// Load swagger.yaml from the dist folder (where it already is)
+const swaggerDocument = YAML.load(path.join(__dirname, 'swagger.yaml'));
 
 router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
