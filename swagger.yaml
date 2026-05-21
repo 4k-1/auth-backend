@@ -1,0 +1,183 @@
+openapi: 3.0.0
+info:
+  title: Auth System API
+  description: Authentication API with JWT, email verification, and password reset
+  version: 1.0.0
+  contact:
+    name: Your Name
+    email: alyssamariedelgado3@gmail.com
+servers:
+  - url: https://auth-backend-6qyk.onrender.com
+    description: Production server
+  - url: http://localhost:4000
+    description: Development server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+          enum: [Admin, User]
+        isVerified:
+          type: boolean
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        '200':
+          description: Server is running
+
+  /accounts/register:
+    post:
+      summary: Register a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - firstName
+                - lastName
+                - email
+                - password
+                - confirmPassword
+                - acceptTerms
+              properties:
+                title:
+                  type: string
+                  enum: [Mr, Mrs, Ms, Dr, Prof]
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 6
+                confirmPassword:
+                  type: string
+                acceptTerms:
+                  type: boolean
+      responses:
+        '201':
+          description: Registration successful
+
+  /accounts/authenticate:
+    post:
+      summary: Login and get JWT token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  jwtToken:
+                    type: string
+
+  /accounts/verify-email:
+    post:
+      summary: Verify email with token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+      responses:
+        '200':
+          description: Email verified successfully
+
+  /accounts/forgot-password:
+    post:
+      summary: Request password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Reset link sent
+
+  /accounts/reset-password:
+    post:
+      summary: Reset password with token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+                - confirmPassword
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  minLength: 6
+                confirmPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password reset successful
