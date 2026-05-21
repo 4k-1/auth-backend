@@ -100,7 +100,15 @@ function getById(req: any, res: any, next: any) {
   accountService.getById(req.params.id).then(account => account ? res.json(account) : res.sendStatus(404)).catch(next);
 }
 function createSchema(req: any, res: any, next: any) {
-  validateRequest(req, next, Joi.object({ title: Joi.string().required(), firstName: Joi.string().required(), lastName: Joi.string().required(), email: Joi.string().email().required(), password: Joi.string().min(6).required(), confirmPassword: Joi.string().valid(Joi.ref('password')).required(), role: Joi.string().valid(Role.Admin, Role.User).required() }));
+  validateRequest(req, next, Joi.object({
+    title: Joi.string().required(),
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(6).required(),
+    confirmPassword: Joi.string().optional(),
+    role: Joi.string().valid(Role.Admin, Role.User).required()
+  }));
 }
 function create(req: any, res: any, next: any) {
   accountService.create(req.body).then(account => res.json(account)).catch(next);
