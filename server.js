@@ -14,7 +14,8 @@ const PORT = process.env.PORT || 4000;
 // CORS - Allow multiple origins
 const allowedOrigins = [
   'http://localhost:4200',
-  'https://auth-frontend-b038.onrender.com'
+  'https://auth-frontend-b038.onrender.com',
+  'https://auth-backend-6qyk.onrender.com'
 ];
 
 app.use(cors({
