@@ -4,7 +4,7 @@
   "description": "Node.js TypeScript MySQL API with JWT authentication",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && copy .env dist\\.env && copy config.json dist\\config.json",
     "start": "node dist/server.js",
     "dev": "nodemon --exec ts-node server.ts"
   },
