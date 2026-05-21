@@ -9,11 +9,14 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "ignoreDeprecations": "6.0"
   },
-  "include": ["**/*.ts",
-     "_helpers/**/*.ts",
+  "include": [
+    "**/*.ts",
+    "_helpers/**/*.ts",
     "_middleware/**/*.ts",
-    "accounts/**/*.ts"],
+    "accounts/**/*.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
