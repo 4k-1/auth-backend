@@ -11,20 +11,47 @@ export default async function sendEmail({ to, subject, html, fromName }: any) {
   }
 
   const emailData = {
-    sender: { name: fromNameValue, email: fromEmail },
-    to: [{ email: to, name: to.split('@')[0] }],
-    subject,
+    sender: {
+      name: fromNameValue,
+      email: fromEmail
+    },
+    to: [
+      {
+        email: to,
+        name: to.split('@')[0]
+      }
+    ],
+    subject: subject,
     htmlContent: html
   };
 
   try {
-    const response = await axios.post('https://api.brevo.com/v3/smtp/email', emailData, {
-      headers: { 'api-key': apiKey, 'Content-Type': 'application/json' }
-    });
+    const response = await axios.post(
+      'https://api.brevo.com/v3/smtp/email',
+      emailData,
+      {
+        headers: {
+          'api-key': apiKey,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    );
+    
     console.log(`✅ Email sent to ${to}`);
+    console.log(`📧 Message ID: ${response.data.messageId}`);
     return { success: true, messageId: response.data.messageId };
+    
   } catch (error: any) {
-    console.error('❌ Email failed:', error.response?.data || error.message);
+    console.error('❌ Brevo API Error:');
+    if (error.response) {
+      console.error('Status:', error.response.status);
+      console.error('Data:', JSON.stringify(error.response.data, null, 2));
+    } else if (error.request) {
+      console.error('No response received from Brevo');
+    } else {
+      console.error('Error:', error.message);
+    }
     return { success: false };
   }
 }
