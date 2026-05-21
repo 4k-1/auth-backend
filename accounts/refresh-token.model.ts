@@ -7,55 +7,54 @@ export default function model(sequelize: any) {
       autoIncrement: true,
       primaryKey: true
     },
-    token: { 
-      type: DataTypes.STRING 
-    },
-    accountId: {  // ✅ ADD THIS - required for foreign key
+    accountId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      field: 'account_id'  // Map to snake_case column in database
+      field: 'account_id'  // ✅ matches your column
     },
-    expires: { 
-      type: DataTypes.DATE 
+    token: {
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      unique: true
     },
-    created: { 
-      type: DataTypes.DATE, 
-      allowNull: false, 
+    expires: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    created: {
+      type: DataTypes.DATE,
+      allowNull: false,
       defaultValue: DataTypes.NOW,
-      field: 'created_at'  // Map to snake_case
+      field: 'created_at'  // ✅ matches your column
     },
-    createdByIp: { 
-      type: DataTypes.STRING,
-      field: 'created_by_ip' 
+    revoked: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      field: 'revoked_at'  // ✅ matches your column
     },
-    revoked: { 
-      type: DataTypes.DATE 
+    replacedByToken: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      field: 'replaced_by_token'  // ✅ matches your column
     },
-    revokedByIp: { 
-      type: DataTypes.STRING,
-      field: 'revoked_by_ip' 
-    },
-    replacedByToken: { 
-      type: DataTypes.STRING,
-      field: 'replaced_by_token' 
-    },
+    // Virtual fields (not in database)
     isExpired: {
       type: DataTypes.VIRTUAL,
-      get(this: any) { 
-        return Date.now() >= new Date(this.expires).getTime(); 
+      get(this: any) {
+        return Date.now() >= new Date(this.expires).getTime();
       }
     },
     isActive: {
       type: DataTypes.VIRTUAL,
-      get(this: any) { 
-        return !this.revoked && !this.isExpired; 
+      get(this: any) {
+        return !this.revoked && !this.isExpired;
       }
     }
   };
   
-  const options = { 
+  const options = {
     timestamps: false,
-    tableName: 'refresh_tokens'  // ✅ ADD THIS - matches your database table name
+    tableName: 'refresh_tokens'  // ✅ matches your table name
   };
   
   return sequelize.define('RefreshToken', attributes, options);

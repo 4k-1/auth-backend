@@ -74,6 +74,7 @@ function generateRefreshToken(account: any, ipAddress: string) {
     accountId: account.id,
     token: randomTokenString(),
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    created: new Date(),
     createdByIp: ipAddress
   });
 }
