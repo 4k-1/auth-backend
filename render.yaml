@@ -2,44 +2,42 @@ services:
   - type: web
     name: auth-backend
     env: node
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm install && npm run build
+    startCommand: node dist/server.js
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 4000
       - key: DB_HOST
-        sync: false
+        value: sql12.freesqldatabase.com
       - key: DB_PORT
         value: 3306
       - key: DB_USER
-        sync: false
+        value: sql12827162
       - key: DB_PASSWORD
-        sync: false
+        value: ppJiM1MpZA
       - key: DB_NAME
-        value: auth_db
+        value: sql12827162
       - key: JWT_SECRET
-        generateValue: true
+        value: mySuperSecretJWTKey2024
       - key: JWT_EXPIRES_IN
         value: 15m
       - key: REFRESH_TOKEN_SECRET
-        generateValue: true
+        value: mySuperSecretRefreshKey2024
       - key: REFRESH_TOKEN_EXPIRES_IN
         value: 7d
-      - key: SMTP_HOST
-        value: smtp.ethereal.email
-      - key: SMTP_PORT
-        value: 587
-      - key: SMTP_USER
-        sync: false
-      - key: SMTP_PASS
-        sync: false
+      - key: BREVO_API_KEY
+        value: xkeysib-773a0e4d7ba07b4123d1f7294516a77ad8d00347d9a1fa0e5ba780007623
       - key: EMAIL_FROM
-        value: noreply@authsystem.com
+        value: alyssamariedelgado3@gmail.com
+      - key: EMAIL_FROM_NAME
+        value: Auth System
       - key: CORS_ORIGIN
-        sync: false   # Set to your deployed Angular frontend URL
-      - key: APP_URL
-        sync: false   # Set to this backend's URL
+        value: https://auth-frontend-b038.onrender.com
       - key: FRONTEND_URL
-        sync: false   # Set to your deployed Angular frontend URL
+        value: https://auth-frontend-b038.onrender.com
+      - key: APP_URL
+        value: https://auth-backend-6qyk.onrender.com
+      - key: NPM_CONFIG_PRODUCTION
+        value: false
