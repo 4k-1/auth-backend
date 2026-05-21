@@ -12,7 +12,7 @@ export default function model(sequelize: any) {
       allowNull: false,
       unique: true
     },
-    passwordHash: {
+    password: {                    // ✅ Changed from passwordHash to password
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -33,32 +33,26 @@ export default function model(sequelize: any) {
       defaultValue: 'User'
     },
     verificationToken: {
-      type: DataTypes.STRING,
-      allowNull: true
+      type: DataTypes.STRING
     },
     verified: {
-      type: DataTypes.DATE,
-      allowNull: true
+      type: DataTypes.DATE
     },
     resetToken: {
-      type: DataTypes.STRING,
-      allowNull: true
+      type: DataTypes.STRING
     },
     resetTokenExpires: {
-      type: DataTypes.DATE,
-      allowNull: true
+      type: DataTypes.DATE
     },
     passwordReset: {
-      type: DataTypes.DATE,
-      allowNull: true
+      type: DataTypes.DATE
     },
     created: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     },
     updated: {
-      type: DataTypes.DATE,
-      allowNull: true
+      type: DataTypes.DATE
     }
   };
 

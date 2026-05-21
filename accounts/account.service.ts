@@ -52,7 +52,7 @@ export default {
 
 async function authenticate({ email, password, ipAddress }: any) {
   const account = await db.Account.scope('withHash').findOne({ where: { email } });
-  if (!account || !(await bcrypt.compare(password, account.passwordHash))) {
+  if (!account || !(await bcrypt.compare(password, account.password))) {
     throw 'Email or password is incorrect';
   }
   if (!account.verified) throw 'Please verify your email before logging in';
@@ -109,7 +109,7 @@ async function register(params: any, origin: string) {
   const isFirstAccount = (await db.Account.count()) === 0;
   account.role = isFirstAccount ? Role.Admin : Role.User;
   account.verificationToken = randomTokenString();
-  account.passwordHash = await hashPassword(params.password);
+  account.password = await hashPassword(params.password);
 
   await account.save();
 
@@ -239,7 +239,7 @@ async function validateResetToken({ token }: any) {
 
 async function resetPassword({ token, password }: any) {
   const account = await validateResetToken({ token });
-  account.passwordHash = await hashPassword(password);
+  account.password = await hashPassword(password);
   account.passwordReset = new Date();
   account.resetToken = null;
   await account.save();
@@ -261,7 +261,7 @@ async function create(params: any) {
   }
   const account = db.Account.build(params);
   account.verified = new Date();
-  account.passwordHash = await hashPassword(params.password);
+  account.password = await hashPassword(params.password);
   await account.save();
   return basicDetails(account);
 }
@@ -269,7 +269,7 @@ async function create(params: any) {
 async function update(id: number, params: any) {
   const account = await getAccount(id);
   if (params.password) {
-    params.passwordHash = await hashPassword(params.password);
+    params.password = await hashPassword(params.password);
   }
   Object.assign(account, params);
   account.updated = new Date();
