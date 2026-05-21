@@ -12,12 +12,12 @@ export default function model(sequelize: any) {
       allowNull: false,
       unique: true
     },
-    password: {                    // ✅ Changed from passwordHash to password
+    passwordHash: {                    // ✅ Keep as passwordHash
       type: DataTypes.STRING,
       allowNull: false
     },
     title: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(10),
       allowNull: true
     },
     firstName: {
@@ -28,37 +28,53 @@ export default function model(sequelize: any) {
       type: DataTypes.STRING,
       allowNull: false
     },
+    acceptTerms: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     role: {
       type: DataTypes.STRING,
       defaultValue: 'User'
     },
     verificationToken: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: true
     },
     verified: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: true
     },
     resetToken: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: true
     },
     resetTokenExpires: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: true
     },
     passwordReset: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: true
     },
     created: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW
     },
     updated: {
-      type: DataTypes.DATE
+      type: DataTypes.DATE,
+      allowNull: true
     }
   };
 
   const options = {
     timestamps: false,
-    tableName: 'users'
+    tableName: 'accounts',    // ✅ CHANGE FROM 'users' TO 'accounts'
+    defaultScope: {
+      attributes: { exclude: ['passwordHash'] }
+    },
+    scopes: {
+      withHash: { attributes: {} }
+    }
   };
 
   return sequelize.define('Account', attributes, options);

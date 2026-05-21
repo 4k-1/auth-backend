@@ -50,9 +50,10 @@ export default {
   delete: _delete
 };
 
+// ✅ FIXED: Use passwordHash column (not password)
 async function authenticate({ email, password, ipAddress }: any) {
   const account = await db.Account.scope('withHash').findOne({ where: { email } });
-  if (!account || !(await bcrypt.compare(password, account.password))) {
+  if (!account || !(await bcrypt.compare(password, account.passwordHash))) {
     throw 'Email or password is incorrect';
   }
   if (!account.verified) throw 'Please verify your email before logging in';
@@ -100,6 +101,7 @@ async function revokeToken({ token, ipAddress }: any) {
   await refreshToken.save();
 }
 
+// ✅ FIXED: Use passwordHash column (not password)
 async function register(params: any, origin: string) {
   if (await db.Account.findOne({ where: { email: params.email } })) {
     throw 'Email already registered';
@@ -109,13 +111,12 @@ async function register(params: any, origin: string) {
   const isFirstAccount = (await db.Account.count()) === 0;
   account.role = isFirstAccount ? Role.Admin : Role.User;
   account.verificationToken = randomTokenString();
-  account.password = await hashPassword(params.password);
+  account.passwordHash = await hashPassword(params.password);  // ✅ Changed to passwordHash
 
   await account.save();
 
   const verificationUrl = `${FRONTEND_URL}/account/verify-email?token=${account.verificationToken}`;
   
-  // ✅ Beautiful HTML email
   await sendEmail({
     to: params.email,
     subject: 'Verify Your Email',
@@ -180,7 +181,6 @@ async function forgotPassword({ email }: any) {
 
   const resetUrl = `${FRONTEND_URL}/account/reset-password?token=${account.resetToken}`;
   
-  // ✅ Beautiful HTML email for password reset
   await sendEmail({
     to: email,
     subject: 'Reset Your Password',
@@ -237,9 +237,10 @@ async function validateResetToken({ token }: any) {
   return account;
 }
 
+// ✅ FIXED: Use passwordHash column (not password)
 async function resetPassword({ token, password }: any) {
   const account = await validateResetToken({ token });
-  account.password = await hashPassword(password);
+  account.passwordHash = await hashPassword(password);  // ✅ Changed to passwordHash
   account.passwordReset = new Date();
   account.resetToken = null;
   await account.save();
@@ -255,21 +256,24 @@ async function getById(id: number) {
   return basicDetails(account);
 }
 
+// ✅ FIXED: Use passwordHash column (not password)
 async function create(params: any) {
   if (await db.Account.findOne({ where: { email: params.email } })) {
     throw 'Email already registered';
   }
   const account = db.Account.build(params);
   account.verified = new Date();
-  account.password = await hashPassword(params.password);
+  account.passwordHash = await hashPassword(params.password);  // ✅ Changed to passwordHash
   await account.save();
   return basicDetails(account);
 }
 
+// ✅ FIXED: Use passwordHash column (not password)
 async function update(id: number, params: any) {
   const account = await getAccount(id);
   if (params.password) {
-    params.password = await hashPassword(params.password);
+    params.passwordHash = await hashPassword(params.password);  // ✅ Changed to passwordHash
+    delete params.password;
   }
   Object.assign(account, params);
   account.updated = new Date();
