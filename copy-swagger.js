@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const filesToCopy = ['.env', 'config.json', 'swagger.yaml']; 
+const filesToCopy = ['.env', 'config.json', 'swagger.yaml'];  // ✅ ADD THIS
 
 filesToCopy.forEach(file => {
   const src = path.join(__dirname, file);
@@ -10,6 +10,6 @@ filesToCopy.forEach(file => {
     fs.copyFileSync(src, dest);
     console.log(`✅ Copied ${file} to dist/`);
   } else {
-    console.log(`⚠️ ${file} not found, skipping`);
+    console.log(`⚠️ ${file} not found`);
   }
 });
